@@ -7,9 +7,9 @@ public class PixyI2C extends PixyCam {
 	Port port = Port.kOnboard;
 	I2C I2CBus = new I2C(port, 0x54);
 	@Override
-	public PixyPacket request(PixyPacket packet) {
+	public PixyPacket request(PixyPacket packet, int returnDataLength) {
 		byte[] packetBuffer = packet.getPacket();
-		byte[] rawData = new byte[0];
+		byte[] rawData = new byte[returnDataLength];
 		System.out.println("Sent Data: " + packetBuffer.length);
 		for(int i = 0; i < packetBuffer.length; i++) {
 			byte num = packetBuffer[i];
@@ -29,6 +29,7 @@ public class PixyI2C extends PixyCam {
 			System.out.println(new String(hexDigits));
 			
 		}
+		packet.returnedData = rawData;
 		return null;
 	}
 }

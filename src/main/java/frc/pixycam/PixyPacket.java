@@ -5,7 +5,7 @@ public class PixyPacket {
 	byte[] syncBuffer = {(byte) 0xAE,(byte) 0xC1};
 	byte type = 0;
 	byte[] payload = new byte[0];
-	int returnLength = 0;
+	byte[] returnedData;
 	public PixyPacket() {
 		
 	}
