@@ -404,15 +404,8 @@ public class Robot extends IterativeRobot {
 			case PIXY_TEST:
 				System.out.println("PIXY_TEST Running");
 				
-				PixyI2C cam = new PixyI2C();
-				System.out.println("setLamp:");
+				PixyI2C cam = new PixyI2C((byte) 0x54);
 				cam.setLamp(true, true);
-				System.out.println("Free Memory: " + (Runtime.getRuntime().freeMemory()/1000000));
-				Timer.delay(0.1);
-				System.out.println("Image:");
-				int[][] returnedImage = cam.getImage();
-				System.out.println("Free Memory: " + (Runtime.getRuntime().freeMemory()/1000000));
-				break;
 				
 			case defaultAuto:
 				System.out.println("defaultAuto Running");

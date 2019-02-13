@@ -1,15 +1,17 @@
 package frc.pixycam;
 
 public class PixyPacket {
-	byte[] packetBuffer = new byte[8];
 	byte[] syncBuffer = {(byte) 0xAE,(byte) 0xC1};
 	byte type = 0;
 	byte[] payload = new byte[0];
-	byte[] returnedData;
+
+	//Default constructor : Not needed right now
 	public PixyPacket() {
-		
+
 	}
+	
 	public byte[] getPacket() {
+		//Creates the new array of bytes 
 		byte[] packet = new byte[syncBuffer.length + 2 + payload.length];
 		for(int i = 0;i < syncBuffer.length;i++) {
 			packet[i] = syncBuffer[i];
@@ -21,23 +23,45 @@ public class PixyPacket {
 		}
 		
 		return packet;
-	};
-	public void importRecvPacket(byte[] packet) {
-		
 	}
+	//Seperates all of the feilds of the packet
+	//Oppisite of get packet
+	public void importRecvPacket(byte[] data) {
+		setType(data[2]); // set the type for the imported packet
+
+		for(int i = 6; i < data.length; i++){
+			payload[i - 6] = data[i];
+		}
+	}
+	//Gets the type
 	public byte getType() {
 		return type;
 	}
+	//Sets the type 
 	public void setType(byte type) {
 		this.type = type;
 	}
+	//gets an array of payload 
 	public byte[] getPayload(){
 		return payload;
 	}
+	//Gets the byte payload length  
 	public int getPayloadLength() {
 		return payload.length;
 	}
+	//Sets the byte payload 
 	public void setPayload(byte[] payload) {
 		this.payload = payload;
 	}
+
+	/////////////////////////////////////////////////////////////
+	// DATA PARSERS
+	/////////////////////////////////////////////////////////////
+/*
+	public PixyFeature getFeatures() {
+		if(type != 0x31){}
+		
+		byte[] data = new byte[1];
+		return data; 
+	}*/
 }
