@@ -11,7 +11,17 @@ package frc.pixycam;
 
  */
 
+
 public abstract class PixyCam {
+
+	boolean debugOn = false;
+
+	public PixyCam(){
+
+	}
+	public PixyCam(boolean debugOn) {
+		this.debugOn = debugOn;
+	}
 
 	/**
 		To Be Implemented by an exending class
@@ -35,11 +45,11 @@ public abstract class PixyCam {
 	 */
 
 	public void setLamp(boolean upper, boolean lower) {
-		PixyPacket packet = new PixyPacket();
+		PixyPacket packet = new PixyPacket(true);
 		packet.setType((byte) 0x16);
 		byte[] data = {(byte) (upper?0x01:0x00), (byte) (lower?0x01:0x00)};
 		packet.setPayload(data);
-		request(packet, 9);
+		request(packet, 10);
 	}
 
 	/**
@@ -59,16 +69,15 @@ public abstract class PixyCam {
 	/**
 
 		Gets the grayscale value of a pixel on the camera
-
+		@return int between 0-255
 	 */
 
-	public int getGrayscale(int x, int y, int saturate){
+	public int getGrayscale(int x, int y, boolean saturate){
 		PixyPacket packet = new PixyPacket();
 		packet.setType((byte) 0x70);
-		byte[] data = {(byte) x, (byte) y, (byte) saturate};
+		byte[] data = {(byte) x, (byte) y, (byte) (saturate?0x01:0x00)};
 		packet.setPayload(data);
-		//request(packet, 7);
-	
+		packet = request(packet, 7);
 		int pixelData = ((int) (packet.payload[0] + packet.payload[1] + packet.payload[3]) / 3);
 
 		return pixelData;
@@ -76,30 +85,32 @@ public abstract class PixyCam {
 
 	/**
 		Get the resolution for the images
+		@return int array holding resolution x (int[0]) and y (int[1])
 	 */
 
 	public int[] getResolution(){
 		PixyPacket packet = new PixyPacket();
 		packet.setType((byte) 0x0D);
-		byte[] data = {0x00};
+		byte[] data = {0x00}; //This data has no use and is "reserved for future versions"
 		packet.setPayload(data);
-		request(packet,2);
-		//Parsing Resolution from returnedData:
-		//int[0] = x, int [1] = y
-		int[] resolution = {(int) (packet.payload[6] + packet.payload[7]), (int) (packet.payload[8] + packet.payload[9])};
+		packet = request(packet,2);
+		//Parsing Resolution from returned data:
+		int[] resolution = {(int) (packet.payload[0] + packet.payload[1]), (int) (packet.payload[2] + packet.payload[3])};
 		return resolution;
 	}
 
-	/*
-		Get an image from the pixycam using getResolution and getGrayscale
+	/**
+		Gets an image from the pixycam using getResolution and getGrayscale
+		@return 2D int array holding the grayscale values of each pixel
 	 */
 
 	public int[][] getImage(){
 		int[] resolution = getResolution();
 		int[][] image = new int[resolution[0]][resolution[1]]; //int[0] = x, int [1] = y
+		
 		for(int x = 0; x < resolution[0]; x++){
 			for(int y = 0; y < resolution[1]; y++){
-				image[x][y] = getGrayscale(x, y, 0);
+				image[x][y] = getGrayscale(x, y, false);
 			}
 		}
 		return image;

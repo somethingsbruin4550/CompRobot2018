@@ -29,12 +29,12 @@ public class PixyI2C extends PixyCam {
 	 */
 
 	@Override
-	public PixyPacket request(PixyPacket packet, int returnDataLength, boolean debug) {
+	public PixyPacket request(PixyPacket packet, int returnDataLength, boolean debugOn) {
 		// Extract the packet to send, This will setup all formating etc.
 		byte[] packetBuffer = packet.getPacket();
 		byte[] rawData = new byte[returnDataLength];
 
-		if (debug) {
+		if (debugOn) {
 			// This is a debug printout, Don't worry about it
 			System.out.println("Sent Data: " + packetBuffer.length);
 			for (int i = 0; i < packetBuffer.length; i++) {
@@ -50,15 +50,16 @@ public class PixyI2C extends PixyCam {
 		// Actually send and get data from the PixyCam
 		I2CBus.transaction(packetBuffer, packetBuffer.length, rawData, rawData.length);
 
-		// Another Debug Printout
-		System.out.println("Recieved Data: " + rawData.length);
-		for (int i = 0; i < rawData.length; i++) {
-			byte num = rawData[i];
-			char[] hexDigits = new char[2];
-			hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
-			hexDigits[1] = Character.forDigit((num & 0xF), 16);
-			System.out.println(new String(hexDigits));
-
+		if(debugOn){
+			// Another Debug Printout
+			System.out.println("Recieved Data: " + rawData.length);
+			for (int i = 0; i < rawData.length; i++) {
+				byte num = rawData[i];
+				char[] hexDigits = new char[2];
+				hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
+				hexDigits[1] = Character.forDigit((num & 0xF), 16);
+				System.out.println(new String(hexDigits));
+			}
 		}
 
 		// Import the array to another packet

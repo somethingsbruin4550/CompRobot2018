@@ -4,10 +4,14 @@ public class PixyPacket {
 	byte[] syncBuffer = {(byte) 0xAE,(byte) 0xC1};
 	byte type = 0;
 	byte[] payload = new byte[9];
+	boolean debugOn = false;
 
 	//Default constructor : Not needed right now
 	public PixyPacket() {
 
+	}
+	public PixyPacket(boolean debugOn) {
+		this.debugOn = debugOn;
 	}
 	
 	public byte[] getPacket() {
@@ -32,8 +36,10 @@ public class PixyPacket {
 		for(int i = 6; i < data.length; i++){
 			payload[i - 6] = data[i];
 		}
-		for(int i = 0; i < payload.length; i++){
-			System.out.println("Payload " + i + ":" + payload[i]);
+		if(debugOn){
+			for(int i = 0; i < payload.length; i++){
+				System.out.println("Payload " + i + ":" + payload[i]);
+			}
 		}
 	}
 	//Gets the type

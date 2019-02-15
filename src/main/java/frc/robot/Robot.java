@@ -404,16 +404,14 @@ public class Robot extends IterativeRobot {
 			case PIXY_TEST:
 				System.out.println("PIXY_TEST Running");
 				
-				//PixyI2C cam = new PixyI2C((byte) 0x54);
-				//cam.setLamp(true, true);
+				PixyI2C cam = new PixyI2C((byte) 0x54);
+				cam.setLamp(true, true);
 				
 			case defaultAuto:
 				System.out.println("defaultAuto Running");
 				//_driver.chassis.driveDoubleDist(10.0,.01,false);
 				//_driver.chassis.shuDrive(7.5, 1000, 0.00419, 0.25, false);
 				//_driver.chassis.shuTurn(90.0, 1000, 0.00483, 0.5, false);
-				PixyI2C cam = new PixyI2C((byte) 0x54);
-				cam.setLamp(true, true);
 				break;
 			}
 		}
