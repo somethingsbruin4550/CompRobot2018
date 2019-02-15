@@ -39,7 +39,7 @@ public abstract class PixyCam {
 		packet.setType((byte) 0x16);
 		byte[] data = {(byte) (upper?0x01:0x00), (byte) (lower?0x01:0x00)};
 		packet.setPayload(data);
-		request(packet, 0);
+		request(packet, 9);
 	}
 
 	/**

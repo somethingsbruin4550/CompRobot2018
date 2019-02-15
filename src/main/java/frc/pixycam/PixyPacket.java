@@ -3,7 +3,7 @@ package frc.pixycam;
 public class PixyPacket {
 	byte[] syncBuffer = {(byte) 0xAE,(byte) 0xC1};
 	byte type = 0;
-	byte[] payload = new byte[0];
+	byte[] payload = new byte[9];
 
 	//Default constructor : Not needed right now
 	public PixyPacket() {
@@ -31,6 +31,9 @@ public class PixyPacket {
 
 		for(int i = 6; i < data.length; i++){
 			payload[i - 6] = data[i];
+		}
+		for(int i = 0; i < payload.length; i++){
+			System.out.println("Payload " + i + ":" + payload[i]);
 		}
 	}
 	//Gets the type
