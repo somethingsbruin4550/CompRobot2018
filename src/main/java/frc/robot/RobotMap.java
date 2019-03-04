@@ -20,10 +20,10 @@ public class RobotMap {
 	//	COMPETITION ROBOT CONSTANTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	// Wheel Talons
-	public static final int LEFT_FORWARD_PORT = 2;
-	public static final int RIGHT_FORWARD_PORT = 3;
+	public static final int LEFT_FORWARD_PORT = 5;
+	public static final int RIGHT_FORWARD_PORT = 2;
 	public static final int LEFT_REAR_PORT = 1;
-	public static final int RIGHT_REAR_PORT = 0;
+	public static final int RIGHT_REAR_PORT = 8;
 
 
 	// Wheel Talon Polarity

@@ -1,3 +1,5 @@
-/*class PixyFeature {
+package frc.pixycam;
+
+class PixyFeature {
     
-}*/
+}

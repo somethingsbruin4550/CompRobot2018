@@ -32,13 +32,15 @@ public class PixyPacket {
 	//Oppisite of get packet
 	public void importRecvPacket(byte[] data) {
 		setType(data[2]); // set the type for the imported packet
+		payload = new byte[data.length-6];
 
-		for(int i = 6; i < data.length; i++){
-			payload[i - 6] = data[i];
+		for(int i = 0; i < data.length - 6; i++){
+			payload[i] = data[i + 6];
 		}
+
 		if(debugOn){
 			for(int i = 0; i < payload.length; i++){
-				System.out.println("Payload " + i + ":" + payload[i]);
+				System.out.print("Payload " + i + ":" + payload[i] + " / "); PixyUtil.printHex(payload[i]);
 			}
 		}
 	}

@@ -2,11 +2,12 @@ package frc.robot;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.sql.Time;
 
 import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 
 import frc.pixycam.PixyI2C;
-
+import frc.pixycam.PixyUtil;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,7 +16,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 // Class
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 
 	
 	
@@ -54,15 +55,20 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<String> _chooser;
 
 	Driver _driver;
+	PixyI2C cam = new PixyI2C((byte) 0x54);
+	boolean camSwitch = false;
+
+	RevLED led = new RevLED();
+
 //	Chassis _chassis;
 //	OI _oi;
 //	Elevator _elevator;
 //	Intake _intake;
 //	Climber _climber;
 
-//	UsbCamera _camera1;
-//	UsbCamera _camera2;
-//	CameraServer server;
+	UsbCamera _camera1;
+	UsbCamera _camera2;
+	CameraServer server;
 
 	double spdMult = 1.0;
 
@@ -90,19 +96,8 @@ public class Robot extends IterativeRobot {
 
 		_driver = new Driver();
 		_driver.reset();	
-//		server = CameraServer.getInstance();
-//		 CameraServer.getInstance().startAutomaticCapture();
-//		 CameraServer.getInstance().startAutomaticCapture(1);
-//		_camera1 = new UsbCamera("cam0", 0);
-//		_camera1.setBrightness(20);
-//		_camera1.setFPS(15);
-//		_camera2 = new UsbCamera("cam1", 1);
-//		_camera2.setBrightness(20);
-//		_camera2.setFPS(15);
-//
-//		server.startAutomaticCapture(_camera1);
-//		server.startAutomaticCapture(_camera2);
 
+		//led.initLED();
 	}
 
 	/**
@@ -125,7 +120,8 @@ public class Robot extends IterativeRobot {
 		autoSelected = _chooser.getSelected();
 		autoRun = true;
 		_driver.reset();
-		// System.out.println("Auto selected: " + autoSelected);
+		
+		led.setDutyCycle(1435); //Sets Gray Breathe
 
 	}
 
@@ -404,14 +400,58 @@ public class Robot extends IterativeRobot {
 			case PIXY_TEST:
 				System.out.println("PIXY_TEST Running");
 				
-				PixyI2C cam = new PixyI2C((byte) 0x54);
-				cam.setLamp(true, true);
+				cam.setLamp(false, false);
+				Timer.delay(0.5);
+				cam.getGrayscale(50, 50, false);
+				Timer.delay(0.5);
+				boolean singleRun = false;
+				int gval = cam.getGrayscale(50, 50, false);
+				while(!_driver.oi.getR1() && !singleRun){
+					int gvalTemp = cam.getGrayscale(50, 50, false);
+					if(gval != gvalTemp) {
+						//System.out.println("Grayscale: " + PixyUtil.printHex((byte) (gval >> 8)) + " " + PixyUtil.printHex((byte) (gval & 0xff)));
+						//SmartDashboard.putString("Grayscale: ", (PixyUtil.printHex((byte) (gval >> 8)) + " " + PixyUtil.printHex((byte) (gval & 0xff))));
+						//SmartDashboard.putString("iS It bRiGHt??", (PixyUtil.printHex((byte) (gval >> 8)).equals("0xff") ? "0xff" : PixyUtil.printHex((byte) (gval & 0xff))))	;
+						
+						gval = gvalTemp;
+					}
+					Timer.delay(0.1);
+				}
+				SmartDashboard.putString("Grayscale: ", "Ended");
+				System.out.println("Exiting Pixy Test");
+				
+
+				/*
+				int[] resolution = cam.getResolution();
+				System.out.println("Resolution:");
+				System.out.println("X: " + resolution[0]);
+				System.out.println("Y: " + resolution[1]);
+				*/
+				/*
+				Timer.delay(1);
+				cam.setLamp(false, true);
+				Timer.delay(1);
+				cam.setLamp(true, false);
+				Timer.delay(1);
+				cam.setLamp(false, false);
+				*/
+				break;
 				
 			case defaultAuto:
-				System.out.println("defaultAuto Running");
-				//_driver.chassis.driveDoubleDist(10.0,.01,false);
-				//_driver.chassis.shuDrive(7.5, 1000, 0.00419, 0.25, false);
-				//_driver.chassis.shuTurn(90.0, 1000, 0.00483, 0.5, false);
+				/*System.out.println("defaultAuto Running");
+				_driver.reset();
+				_driver.driveRaise(1, 1, false);*/
+				while(!_driver.oi.getXButton()){
+					/*
+					for(int i = 500; i<1995; i+=1){
+						led.setDutyCycle(i);
+						Timer.delay(0.1);
+					}
+					*/
+					int dutyCycle = 0;
+					SmartDashboard.getNumber("LED DutyCycle", dutyCycle);
+					led.setDutyCycle(dutyCycle);
+				}
 				break;
 			}
 		}
@@ -420,6 +460,10 @@ public class Robot extends IterativeRobot {
 
 	public void teleopInit() {
 		_driver.reset();
+		//led.setDutyCycle(494); //Sets Blue Breathe
+		int dutyCycle = SmartDashboard.getNumber("LED DutyCycle", 0.0);
+		//int dutyCycle = SmartDashboard.getNumber("LED DutyCycle", dutyCycle);//SmartDashboard.getEntry("LED DutyCycle");
+		led.setDutyCycle(dutyCycle);
 	}
 
 	/**
@@ -428,9 +472,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	// Runs Teleop
 	public void teleopPeriodic() {
-		//Timer time = new Timer();
-		//time.start();
-	//	if (!time.hasPeriodPassed(120.0)) {
+
 			_driver.chassis.tankDrive(OI.normalize(Math.pow(_driver.oi.getRJoystickXAxis(), 3), -1.0, 0, 1.0) * 0.7,
 					OI.normalize(Math.pow(_driver.oi.getLJoystickYAxis(), 3), -1.0, 0, 1.0) * 0.7);
 			if (!_driver.elevator.getLimit()) {

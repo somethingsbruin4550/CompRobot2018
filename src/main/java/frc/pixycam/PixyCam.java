@@ -49,7 +49,7 @@ public abstract class PixyCam {
 		packet.setType((byte) 0x16);
 		byte[] data = {(byte) (upper?0x01:0x00), (byte) (lower?0x01:0x00)};
 		packet.setPayload(data);
-		request(packet, 10);
+		request(packet, 6, false);
 	}
 
 	/**
@@ -75,10 +75,29 @@ public abstract class PixyCam {
 	public int getGrayscale(int x, int y, boolean saturate){
 		PixyPacket packet = new PixyPacket();
 		packet.setType((byte) 0x70);
-		byte[] data = {(byte) x, (byte) y, (byte) (saturate?0x01:0x00)};
+
+		byte[] data = {
+			(byte) (x >> 8), (byte) (x & 0xff),
+			(byte) (y >> 8), (byte) (y & 0xff),
+			(byte) (saturate?0x01:0x00)};
 		packet.setPayload(data);
-		packet = request(packet, 7);
-		int pixelData = ((int) (packet.payload[0] + packet.payload[1] + packet.payload[3]) / 3);
+		packet = request(packet, 9, false);
+		int pixelData = ((int) (packet.payload[0] + packet.payload[1] + packet.payload[2]) / 3);
+
+		return pixelData;
+	}
+
+	public byte[] getRGB(int x, int y, boolean saturate) {
+		PixyPacket packet = new PixyPacket();
+		packet.setType((byte) 0x70);
+
+		byte[] data = {
+			(byte) (x >> 8), (byte) (x & 0xff),
+			(byte) (y >> 8), (byte) (y & 0xff),
+			(byte) (saturate?0x01:0x00)};
+		packet.setPayload(data);
+		packet = request(packet, 9, false);
+		byte[] pixelData = {packet.payload[0], packet.payload[1], packet.payload[2]};
 
 		return pixelData;
 	}
@@ -93,10 +112,11 @@ public abstract class PixyCam {
 		packet.setType((byte) 0x0D);
 		byte[] data = {0x00}; //This data has no use and is "reserved for future versions"
 		packet.setPayload(data);
-		packet = request(packet,2);
+		packet = request(packet,10);
 		//Parsing Resolution from returned data:
-		int[] resolution = {(int) (packet.payload[0] + packet.payload[1]), (int) (packet.payload[2] + packet.payload[3])};
-		return resolution;
+		//int[] resolution = {(int) (packet.payload[0] + 128 + packet.payload[1] + 128), (int) (packet.payload[2] + 128 + packet.payload[3] + 128)};
+		int[] res = {((int) packet.payload[0] << 8) + packet.payload[1], ((int) packet.payload[2] << 8) + packet.payload[3]};
+		return res;
 	}
 
 	/**
@@ -105,7 +125,7 @@ public abstract class PixyCam {
 	 */
 
 	public int[][] getImage(){
-		int[] resolution = getResolution();
+		int[] resolution = {5,5};//getResolution();
 		int[][] image = new int[resolution[0]][resolution[1]]; //int[0] = x, int [1] = y
 		
 		for(int x = 0; x < resolution[0]; x++){
@@ -125,7 +145,7 @@ public abstract class PixyCam {
 		packet.setType((byte) 0x30);
 		byte[] data = {(byte) 0x00, (byte) 0x04};
 		packet.setPayload(data);
-		request(packet, 50);
+		request(packet, 50, false);
 	}
 
 }

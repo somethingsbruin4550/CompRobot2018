@@ -37,14 +37,7 @@ public class PixyI2C extends PixyCam {
 		if (debugOn) {
 			// This is a debug printout, Don't worry about it
 			System.out.println("Sent Data: " + packetBuffer.length);
-			for (int i = 0; i < packetBuffer.length; i++) {
-				byte num = packetBuffer[i];
-				char[] hexDigits = new char[2];
-				hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
-				hexDigits[1] = Character.forDigit((num & 0xF), 16);
-				System.out.println(new String(hexDigits));
-
-			}
+			PixyUtil.printHexList(packetBuffer);
 		}
 
 		// Actually send and get data from the PixyCam
@@ -53,17 +46,11 @@ public class PixyI2C extends PixyCam {
 		if(debugOn){
 			// Another Debug Printout
 			System.out.println("Recieved Data: " + rawData.length);
-			for (int i = 0; i < rawData.length; i++) {
-				byte num = rawData[i];
-				char[] hexDigits = new char[2];
-				hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
-				hexDigits[1] = Character.forDigit((num & 0xF), 16);
-				System.out.println(new String(hexDigits));
-			}
+			PixyUtil.printHexList(rawData);
 		}
 
 		// Import the array to another packet
-		PixyPacket recvPacket = new PixyPacket();
+		PixyPacket recvPacket = new PixyPacket(false);
 		recvPacket.importRecvPacket(rawData);
 		return recvPacket;
 	}
