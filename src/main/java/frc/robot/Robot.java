@@ -438,20 +438,21 @@ public class Robot extends TimedRobot {
 				break;
 				
 			case defaultAuto:
-				/*System.out.println("defaultAuto Running");
-				_driver.reset();
-				_driver.driveRaise(1, 1, false);*/
+				System.out.println("defaultAuto Running");
+				_driver.chassis.simpleLimeTurn(1.0);
+				/*
 				while(!_driver.oi.getXButton()){
-					/*
+					
 					for(int i = 500; i<1995; i+=1){
 						led.setDutyCycle(i);
 						Timer.delay(0.1);
 					}
-					*/
+					
 					int dutyCycle = 0;
 					SmartDashboard.getNumber("LED DutyCycle", dutyCycle);
 					led.setDutyCycle(dutyCycle);
-				}
+				}*/
+				//_driver.chassis.turnToAngleLimePID();
 				break;
 			}
 		}
@@ -461,7 +462,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		_driver.reset();
 		//led.setDutyCycle(494); //Sets Blue Breathe
-		int dutyCycle = SmartDashboard.getNumber("LED DutyCycle", 0.0);
+		int dutyCycle = (int)(SmartDashboard.getNumber("LED DutyCycle", 0.0));
 		//int dutyCycle = SmartDashboard.getNumber("LED DutyCycle", dutyCycle);//SmartDashboard.getEntry("LED DutyCycle");
 		led.setDutyCycle(dutyCycle);
 	}
@@ -472,6 +473,7 @@ public class Robot extends TimedRobot {
 	@Override
 	// Runs Teleop
 	public void teleopPeriodic() {
+			System.out.println("TX Value: "+ _driver.chassis.getTX());
 
 			_driver.chassis.tankDrive(OI.normalize(Math.pow(_driver.oi.getRJoystickXAxis(), 3), -1.0, 0, 1.0) * 0.7,
 					OI.normalize(Math.pow(_driver.oi.getLJoystickYAxis(), 3), -1.0, 0, 1.0) * 0.7);
@@ -522,6 +524,11 @@ public class Robot extends TimedRobot {
 				_driver.climber.setClimber(-1.0);
 			} else {
 				_driver.climber.setClimber(0.0);
+			}
+
+			if(_driver.oi.getSelect()){
+				System.out.println("Holding Lime Turn");
+				_driver.chassis.holdLimeTurn();
 			}
 		}
 	//}

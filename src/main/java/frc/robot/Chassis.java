@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.RobotMap;
+import frc.limelight.LimeCam;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogOutput;
@@ -28,6 +29,7 @@ public class Chassis {
 	TalonSRX _rearLeft;
 	TalonSRX _rearRight;
 
+	LimeCam limelight;
 	AHRS _gyro;
 	AnalogOutput _ultra;
 
@@ -35,6 +37,8 @@ public class Chassis {
 	private static Chassis _instance;
 	//Creates the Chassis
 	private Chassis() {
+		limelight = new LimeCam();
+
 		_frontLeft = new TalonSRX(RobotMap.LEFT_FORWARD_PORT);
 		_frontRight = new TalonSRX(RobotMap.RIGHT_FORWARD_PORT);
 		_rearLeft = new TalonSRX(RobotMap.LEFT_REAR_PORT);
@@ -677,7 +681,7 @@ public class Chassis {
 			System.out.print("Error: " + error + " ");
 			System.out.print("P: " + p + " ");
 			System.out.println("Input: " + input + " ");
-			turn(-input);
+			shuTurn(-input);
 			Timer.delay(0.1);
 			if(error <= accepError) {
 				clock.start();
@@ -690,8 +694,35 @@ public class Chassis {
 		}
 		clock.stop();
 		clock.reset();
-	}*/
+	}
+	*/
 	
-	
+	public void turnToAngleLimePID() {
+		turnToAngle(limelight.getTX(), 0.001, false);
+	}
 
+	public void simpleLimeTurn(double minAngleError){
+		System.out.println("Turning with TX of: " + getTX());
+		int count = 0;
+		while(count<1000){
+			Timer.delay(0.01);
+
+			double absTX = (limelight.getTX())/30;
+			//driveSpd(limelight.getTX()<0?-absTX:absTX,limelight.getTX()>0?-absTX:absTX);
+			driveSpd(absTX,-absTX);
+			count++;
+			System.out.println("absTx: " + absTX + ", tx:" + limelight.getTX());
+		}
+		//driveSpd(0,0);
+	}
+
+	public void holdLimeTurn(){
+		double absTX = limelight.getTX()/30;
+		driveSpd(absTX, -absTX);
+		driveSpd(0,0);
+	}
+
+	public double getTX(){
+		return limelight.getTX();
+	}
 }

@@ -1,5 +1,5 @@
-package frc.limelight;
 
+package frc.limelight;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -7,21 +7,20 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimeCam {
     //Creates a new network table
-    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-bruin");
     //Creates the x, y, and area entries 
-    private NetworkTableEntry tx = table.getEntry("tx");
-    private NetworkTableEntry ty = table.getEntry("ty");
-    private NetworkTableEntry ta = table.getEntry("ta");
-    private NetworkTableEntry px = table.getEntry("px");
-    private NetworkTableEntry py = table.getEntry("py");
+    NetworkTableEntry tx = table.getEntry("tx");
+    NetworkTableEntry ty = table.getEntry("ty");
+    NetworkTableEntry ta = table.getEntry("ta");
 
     //read values periodically
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0); 
+    double area = ta.getDouble(0.0);
     
     
-    // //Posts the x, y, and the area to the smart dashboard
+    
+    //Posts the x, y, and the area to the smart dashboard
     // SmartDashboard.putNumber("LimelightX", x);
     // SmartDashboard.putNumber("LimelightY", y);
     // SmartDashboard.putNumber("LimelightArea", area);
@@ -38,6 +37,8 @@ public class LimeCam {
     //Elitimates the distance using DIFFERENT MATH:
     //Uses angle between the object and the camera to calculate the horizontal distance
     //NOTE: estimateDistanceViaTrig() is MORE accurate than estimateDistanceViaArea()
+
+/*
 
     public double estimateDistanceViaTrig(){
         //equation constants, NEED TO MEASURE HEIGHT OF THE LIME LIGHT 
@@ -64,7 +65,30 @@ public class LimeCam {
         return dist;                                                                                                                            
     }
 
-    
+    public double getVertAngle(){
+        double pixY = py.getDouble(0.0); //gets y coordinante
+        double ny = (1/120) * (119.5 - pixY); //Calculates the normalized pixel y
+        double vpw = 2.0 * Math.tan(54/2); //gets the vertical and horizontal field of view size
+        double vph = 2.0 * Math.tan(41/2); 
+        double y = vph/2 * ny; //calculatrs the y pixel location
+        double ay = Math.atan2(1, y); //gets the y angle
+        return ay; //y angle is vertical angle
+    }
 
+    //returns the horizontal angle of the target from the camera center        
+    public double getHortAngle(){
+        double pixX = px.getDouble(0.0); //gets the x pixel position
+        double nx = (1/160) * (pixX - 159.5); //Calculates the noramlized pixel x
+        double vpw = 2.0 * Math.tan(54/2); //gets the vertical and horizontal field of view size
+        double x = vpw/2 * nx; //calculates the x pixel location
+        double ax = Math.atan2(1, x); //calculates the x angle
+        return ax;
+    }
+    */
+
+    public double getTX(){
+        x = tx.getDouble(0.0);
+        return x;
+    }
 
 }
