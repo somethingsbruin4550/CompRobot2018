@@ -702,6 +702,8 @@ public class Chassis {
 	}
 
 	public void simpleLimeTurn(double minAngleError){
+		System.out.println(limelight.getTargetAngle());
+		/*
 		System.out.println("Turning with TX of: " + getTX());
 		int count = 0;
 		while(count<1000){
@@ -713,7 +715,7 @@ public class Chassis {
 			count++;
 			System.out.println("absTx: " + absTX + ", tx:" + limelight.getTX());
 		}
-		//driveSpd(0,0);
+		//driveSpd(0,0);*/
 	}
 
 	public void holdLimeTurn(){

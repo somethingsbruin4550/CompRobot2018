@@ -90,5 +90,12 @@ public class LimeCam {
         x = tx.getDouble(0.0);
         return x;
     }
-
+    public double getTargetAngle() {
+        double targetAngle = 0;
+        double distFromCenter = 0;
+        double limelightToCenter = 7.75; //need to measure this value
+        distFromCenter = Math.sqrt(Math.pow(estimateDistanceViaArea(), 2) + Math.pow(limelightToCenter, 2) - 2 * limelightToCenter * estimateDistanceViaArea() * Math.cos(getTX()));
+        targetAngle = getTX() * estimateDistanceViaArea() /  distFromCenter; 
+        return targetAngle;
+    }
 }
