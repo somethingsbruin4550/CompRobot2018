@@ -701,21 +701,37 @@ public class Chassis {
 		turnToAngle(limelight.getTX(), 0.001, false);
 	}
 
-	public void simpleLimeTurn(double minAngleError){
-		System.out.println(limelight.getTargetAngle());
-		/*
-		System.out.println("Turning with TX of: " + getTX());
-		int count = 0;
-		while(count<1000){
-			Timer.delay(0.01);
+	public void simpleLimeTurn(){
+		limelight.setLED(true);
+		Timer.delay(0.5);
+		double target;
+		double speed = 0.2;
+		boolean running = true;
+		double bounds = 0.05;
+		while(running){
+			target = getFinalLimelightAngle();
+			System.out.println("Target: " + target);
 
-			double absTX = (limelight.getTX())/30;
-			//driveSpd(limelight.getTX()<0?-absTX:absTX,limelight.getTX()>0?-absTX:absTX);
-			driveSpd(absTX,-absTX);
-			count++;
-			System.out.println("absTx: " + absTX + ", tx:" + limelight.getTX());
+			if(target<0){
+				driveSpd(-speed, speed);
+			}
+			else if(target>0){
+				driveSpd(speed, -speed);
+			}
+			else{
+				System.out.println("Target is perfect or it's not connected");
+				running = false;
+			}
+
+			if(target >= -bounds && target <= bounds){
+				driveSpd(0,0);
+				running = false;
+				System.out.println("Withing threshold; exiting loop");
+			}
+
 		}
-		//driveSpd(0,0);*/
+		//limelight.setLED(false);
+		//driveSpd(0,0);
 	}
 
 	public void holdLimeTurn(){
@@ -726,5 +742,14 @@ public class Chassis {
 
 	public double getTX(){
 		return limelight.getTX();
+	}
+
+	public double getFinalLimelightAngle(){
+		System.out.println(limelight.getTargetAngle());
+		return limelight.getTargetAngle();
+	}
+
+	public void setLimelightLED(boolean lightOn){
+		limelight.setLED(lightOn);
 	}
 }

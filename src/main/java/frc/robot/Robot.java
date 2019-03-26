@@ -439,7 +439,13 @@ public class Robot extends TimedRobot {
 				
 			case defaultAuto:
 				System.out.println("defaultAuto Running");
-				_driver.chassis.simpleLimeTurn(1.0);
+				_driver.chassis.simpleLimeTurn();
+				/*
+				_driver.chassis.limelight.setLED(true);
+				Timer.delay(0.5);
+				System.out.println("Original: " + _driver.chassis.limelight.getTX());
+				_driver.chassis.getFinalLimelightAngle();
+				_driver.chassis.limelight.setLED(false);*/
 				/*
 				while(!_driver.oi.getXButton()){
 					

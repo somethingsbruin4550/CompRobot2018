@@ -1,5 +1,6 @@
 
 package frc.limelight;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -12,11 +13,13 @@ public class LimeCam {
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
+    NetworkTableEntry ledMode = table.getEntry("ledMode");
 
     //read values periodically
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
     double area = ta.getDouble(0.0);
+    double led = ledMode.getDouble(-1);
     
     
     
@@ -97,5 +100,18 @@ public class LimeCam {
         distFromCenter = Math.sqrt(Math.pow(estimateDistanceViaArea(), 2) + Math.pow(limelightToCenter, 2) - 2 * limelightToCenter * estimateDistanceViaArea() * Math.cos(getTX()));
         targetAngle = getTX() * estimateDistanceViaArea() /  distFromCenter; 
         return targetAngle;
+    }
+
+    /**
+     * 
+     * @param lightOn
+     */
+    public void setLED(boolean lightOn){
+        if(!lightOn){
+            ledMode.setNumber(1);
+        }
+        else{
+            ledMode.setNumber(3);
+        }
     }
 }
