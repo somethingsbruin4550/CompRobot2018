@@ -32,8 +32,9 @@ public class LimeCam {
     //Uses the area of the recongiized object to calculate the distance
     //Sees the percentage of the screen that the object is taking up, and returns the distance 
     public double estimateDistanceViaArea(){
-        final double PROPCONST = 20.0; //need to measure
-        double dist = ta.getDouble(0.0)*PROPCONST;
+        //final double PROPCONST = 9.75; //need to measure
+        double dist = 62.9 - 15.1 * Math.log(ta.getDouble(0.0));//*PROPCONST;
+        System.out.println("Distance from limelight: " + dist);
         return dist;
     }
 
@@ -98,6 +99,7 @@ public class LimeCam {
         double distFromCenter = 0;
         double limelightToCenter = 7.75; //need to measure this value
         distFromCenter = Math.sqrt(Math.pow(estimateDistanceViaArea(), 2) + Math.pow(limelightToCenter, 2) - 2 * limelightToCenter * estimateDistanceViaArea() * Math.cos(getTX()));
+        System.out.println("Distance from center: " +distFromCenter);
         targetAngle = getTX() * estimateDistanceViaArea() /  distFromCenter; 
         return targetAngle;
     }

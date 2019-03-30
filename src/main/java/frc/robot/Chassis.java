@@ -1,3 +1,4 @@
+
 package frc.robot;
 
 import frc.robot.RobotMap;
@@ -707,7 +708,7 @@ public class Chassis {
 		double target;
 		double speed = 0.2;
 		boolean running = true;
-		double bounds = 0.05;
+		double bounds = 0.08;
 		while(running){
 			target = getFinalLimelightAngle();
 			System.out.println("Target: " + target);
