@@ -1,49 +1,17 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import frc.parent.*;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
-import edu.wpi.first.wpilibj.Timer;
+//Extends the Mechanisms class
+//It does use two talons so using tTwo won't cause an error(probably)
+public class Intake{
 
-public class Intake {
+    private static CCTalon tal1 = new CCTalon(RobotMap.INTAKE_A, true);
+    private static CCTalon tal2 = new CCTalon(RobotMap.INTAKE_B, true);
 
-	private TalonSRX _talon1;
-	private TalonSRX _talon2;
-//	DigitalInput _sensor;
-//	DigitalOutput _led;
-	 
-
-
-	public Intake(){
-		_talon1 = new TalonSRX(RobotMap.INTAKE_A);
-		_talon2 = new TalonSRX(RobotMap.INTAKE_B);
-		_talon1.setInverted(false);
-		_talon2.setInverted(false);
-//		_sensor = new DigitalInput(RobotMap.BREAK_SENSOR);
-//		_led = new DigitalOutput(RobotMap.LED_PORT);
-	}
-
-	public void setIntake(double speed1, double speed2){
-			_talon1.set(ControlMode.PercentOutput, speed1);
-			_talon2.set(ControlMode.PercentOutput, speed2);
-		
-//			if(!breakCheck()) {
-//				_led.pulse(50);
-//			}
-	}
-	
-	public void runIntake(double speed1, double speed2, double time) {
-		setIntake(speed1, speed2);
-		Timer.delay(time);
-		setIntake( 0.0, 0.0 );
-	}
-//
-//	public boolean breakCheck() {
-//		return _sensor.get();
-//	}
-
-
+    public static void set(double speed){
+        tal1.set(speed);
+        tal2.set(speed);
+    }
 
 }
